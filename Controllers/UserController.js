@@ -5,7 +5,11 @@ const mongoose = require('mongoose');
 
 const register = async (req, res) => {
   try {
-    const { username, email, password } = req.body;
+    const { username, email, password, repeatPass } = req.body;
+
+    if (repeatPass !== password) {
+      return res.status(403).json({ error: 'password is not match' });
+    }
 
     const hashPassword = await bcrypt.hash(password, 10);
 
@@ -18,7 +22,7 @@ const register = async (req, res) => {
     const token = jwt.sign({
       user: user.username,
       id: user._id
-    }, process.env.SECRETKEY);
+    }, process.env.SECRETKEY, { expiresIn: '30d' });
 
     res.cookie('token', token);
 
@@ -43,7 +47,7 @@ const login = async (req, res) => {
             const token = jwt.sign({
               user: user.username,
               id: user._id
-            }, process.env.SECRETKEY);
+            }, process.env.SECRETKEY, { expiresIn: '30d' });
 
             res.cookie('token', token).json({ user });
           } else {
