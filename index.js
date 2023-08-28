@@ -10,7 +10,7 @@ app.use(express.json());
 app.use(cookieParser());
 dotenv.config();
 
-mongoose.connect('mongodb+srv://Ivan:LYabfabczEYCadF8@cluster0.ea5nzxe.mongodb.net/')
+mongoose.connect(process.env.DBCONNECT)
   .then(() => {
     console.log('Connected to mongoDB');
   })
