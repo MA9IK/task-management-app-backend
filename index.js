@@ -7,6 +7,7 @@ const { register, login } = require('./Controllers/UserController');
 const cookieParser = require('cookie-parser');
 const cors = require('cors');
 const { checkAuth } = require('./utils/checkAuth');
+const { registerValidator, loginValidator } = require('./validations/userValidator');
 
 app.use(express.json());
 app.use(cors({ credentials: true, origin: 'http://localhost:3000' }));
@@ -23,7 +24,7 @@ mongoose.connect(process.env.DBCONNECT)
 
 app.get('/', checkAuth);
 
-app.post('/register', register);
+app.post('/register', registerValidator, register);
 
 app.post('/login', login);
 

@@ -1,10 +1,15 @@
 const userModel = require('../Models/UserModel');
 const jwt = require('jsonwebtoken');
 const bcrypt = require('bcrypt');
-const mongoose = require('mongoose');
+const { validationResult } = require('express-validator');
 
 const register = async (req, res) => {
   try {
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+      return res.status(400).json({ errors: errors.array() });
+    }
+
     const { username, email, password, repeatPass } = req.body;
 
     if (repeatPass !== password) {
@@ -19,12 +24,13 @@ const register = async (req, res) => {
       passwordHash: hashPassword
     });
 
+
     const token = jwt.sign({
       user: user.username,
       id: user._id
     }, process.env.SECRETKEY, { expiresIn: '30d' });
 
-    res.cookie('token', token);
+    res.cookie('token', token, { maxAge: 604800000 });
 
     const { passwordHash, ...userWithoutPass } = user._doc;
 
@@ -37,7 +43,7 @@ const register = async (req, res) => {
 
 const login = async (req, res) => {
   try {
-    const { email, password } = req.body;
+    const { email, password, remember } = req.body;
 
     userModel.findOne({ email: email })
       .then((user) => {
@@ -49,7 +55,7 @@ const login = async (req, res) => {
               id: user._id
             }, process.env.SECRETKEY, { expiresIn: '30d' });
 
-            res.cookie('token', token).json({ user });
+            res.cookie('token', token, { maxAge: remember ? 1209600000 : 604800000 }).json({ user });
           } else {
             return res.status(400).json({ error: 'Invalid Credentials' });
           }
@@ -58,6 +64,7 @@ const login = async (req, res) => {
         }
       })
       .catch(err => {
+
         console.log(err);
       });
   } catch (err) {
