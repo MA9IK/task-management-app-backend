@@ -3,7 +3,7 @@ const dotenv = require('dotenv');
 const mongoose = require('mongoose');
 const app = express();
 const PORT = process.env.PORT || 4000;
-const { register, login } = require('./Controllers/UserController');
+const { register, login, logout } = require('./Controllers/UserController');
 const cookieParser = require('cookie-parser');
 const cors = require('cors');
 const { checkAuth } = require('./utils/checkAuth');
@@ -27,6 +27,8 @@ app.get('/', checkAuth);
 app.post('/register', registerValidator, register);
 
 app.post('/login', login);
+
+app.post('/logout', checkAuth, logout)
 
 app.listen(PORT, (req, res) => {
   console.log(`Server started on port - ${PORT}`);

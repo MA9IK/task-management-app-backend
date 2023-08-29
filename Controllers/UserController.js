@@ -73,7 +73,17 @@ const login = async (req, res) => {
   }
 };
 
+const logout = async (req, res) => {
+  try {
+    res.clearCookie('token').json('ok');
+  } catch (err) {
+    console.log(err)
+    res.status(500).json('Something went wrong');
+  }
+};
+
 module.exports = {
   register,
-  login
+  login,
+  logout
 };
