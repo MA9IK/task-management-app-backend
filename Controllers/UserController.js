@@ -75,10 +75,10 @@ const login = async (req, res) => {
 
 const logout = async (req, res) => {
   try {
-    res.clearCookie('token').json('ok');
+    return res.clearCookie('token').json('ok')
   } catch (err) {
-    console.log(err)
-    res.status(500).json('Something went wrong');
+    console.log(err);
+    return res.status(500).json('Something went wrong')
   }
 };
 

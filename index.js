@@ -28,7 +28,7 @@ app.post('/register', registerValidator, register);
 
 app.post('/login', login);
 
-app.post('/logout', checkAuth, logout)
+app.post('/logout', logout)
 
 app.listen(PORT, (req, res) => {
   console.log(`Server started on port - ${PORT}`);

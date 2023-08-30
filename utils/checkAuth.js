@@ -11,8 +11,8 @@ const checkAuth = async (req, res, next) => {
     } else {
       res.json({auth: false})
     }
-
     next();
+
   } catch (err) {
     console.log(err);
   }
