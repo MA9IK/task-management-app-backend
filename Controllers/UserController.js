@@ -24,7 +24,6 @@ const register = async (req, res) => {
       passwordHash: hashPassword
     });
 
-
     const token = jwt.sign({
       user: user.username,
       id: user._id
@@ -44,7 +43,6 @@ const register = async (req, res) => {
 const login = async (req, res) => {
   try {
     const { email, password, remember } = req.body;
-
     userModel.findOne({ email: email })
       .then((user) => {
         if (user) {
@@ -54,6 +52,7 @@ const login = async (req, res) => {
               user: user.username,
               id: user._id
             }, process.env.SECRETKEY, { expiresIn: '30d' });
+            res.userId = user._id
 
             res.cookie('token', token, { maxAge: remember ? 1209600000 : 604800000 }).json({ user });
           } else {
@@ -73,17 +72,34 @@ const login = async (req, res) => {
   }
 };
 
+const profile = async (req, res) => {
+  try {
+    const { token } = req.cookies;
+    if (token) {
+      await jwt.verify(token, process.env.SECRETKEY, {}, (err, decoded) => {
+        if (err) throw err;
+        res.json({ auth: true, decoded });
+      });
+    } else {
+      res.status(401).json({ auth: false });
+    }
+  } catch (err) {
+
+  }
+};
+
 const logout = async (req, res) => {
   try {
-    return res.clearCookie('token').json('ok')
+    return res.clearCookie('token').json('ok');
   } catch (err) {
     console.log(err);
-    return res.status(500).json('Something went wrong')
+    return res.status(500).json('Something went wrong');
   }
 };
 
 module.exports = {
   register,
   login,
-  logout
+  logout,
+  profile
 };
