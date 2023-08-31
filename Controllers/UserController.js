@@ -55,7 +55,7 @@ const login = async (req, res) => {
             res.userId = user._id
 
             res.cookie('token', token, {
-              expires: remember ? 1209600000 : 604800000,
+              maxAge: remember ? 1209600000 : 604800000,
               secure: true,
               httpOnly: true,
               path: '/',
