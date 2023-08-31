@@ -54,7 +54,13 @@ const login = async (req, res) => {
             }, process.env.SECRETKEY, { expiresIn: '30d' });
             res.userId = user._id
 
-            res.cookie('token', token, { maxAge: remember ? 1209600000 : 604800000, secure: true, httpOnly: false }).json({ user });
+            res.cookie('token', token, {
+              expires: remember ? 1209600000 : 604800000,
+              secure: true,
+              httpOnly: true,
+              path: '/',
+              sameSite: 'none'
+            }).json({ user });
           } else {
             return res.status(400).json({ error: 'Invalid Credentials' });
           }
