@@ -9,10 +9,9 @@ const cookieParser = require('cookie-parser');
 const cors = require('cors');
 const { checkAuth } = require('./utils/checkAuth');
 const { registerValidator } = require('./validations/userValidator');
-const { all } = require('express/lib/application');
 
 app.use(express.json());
-app.use(cors({ credentials: true, origin: 'http://localhost:3000' }));
+app.use(cors({ credentials: true, origin: 'https://task-management-app-frontend.vercel.app/' }));
 app.use(cookieParser());
 dotenv.config();
 
@@ -25,7 +24,7 @@ mongoose.connect(process.env.DBCONNECT)
   });
 
 app.get('/', checkAuth);
-app.get('/profile', checkAuth,profile);
+app.get('/profile', checkAuth, profile);
 app.post('/register', registerValidator, register);
 app.post('/login', login);
 app.post('/logout', logout);
