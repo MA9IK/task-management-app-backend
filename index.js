@@ -13,7 +13,7 @@ const { registerValidator } = require('./validations/userValidator');
 app.use(express.json());
 app.use(cors({
   credentials: true,
-  origin: 'https://task-management-app-frontend-ph8hquzdl-ivanua.vercel.app'
+  origin: 'https://task-management-app-frontend-lz6jtjzt3-ivanua.vercel.app'
 }));
 app.use(cookieParser());
 dotenv.config();
