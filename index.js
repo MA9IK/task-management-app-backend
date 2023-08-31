@@ -15,6 +15,7 @@ app.use(cors({
   credentials: true,
   origin: 'https://task-management-app-frontend-4pauu0tgn-ivanua.vercel.app',
   optionsSuccessStatus: 200,
+  httpOnly: false
 }));
 app.use(cookieParser());
 dotenv.config();
