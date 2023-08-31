@@ -12,8 +12,8 @@ const { registerValidator } = require('./validations/userValidator');
 
 app.use(express.json());
 app.use(cors({
-  origin: 'https://task-management-app-frontend.vercel.app',
-  credentials: true
+  credentials: true,
+  origin: 'https://task-management-app-frontend.vercel.app'
 }));
 app.use(cookieParser());
 dotenv.config();
