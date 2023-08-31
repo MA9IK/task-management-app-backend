@@ -12,7 +12,7 @@ const { registerValidator } = require('./validations/userValidator');
 
 app.use(express.json());
 app.use(cors({
-  origin: 'https://task-management-app-frontend-ph8hquzdl-ivanua.vercel.app/',
+  origin: 'https://task-management-app-frontend-ph8hquzdl-ivanua.vercel.app',
   credentials: true
 }));
 app.use(cookieParser());
