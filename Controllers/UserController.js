@@ -29,7 +29,7 @@ const register = async (req, res) => {
       id: user._id
     }, process.env.SECRETKEY, { expiresIn: '30d' });
 
-    res.cookie('token', token, { maxAge: 604800000 });
+    res.cookie('token', token, { maxAge: 604800000, secure: true });
 
     const { passwordHash, ...userWithoutPass } = user._doc;
 
@@ -54,7 +54,7 @@ const login = async (req, res) => {
             }, process.env.SECRETKEY, { expiresIn: '30d' });
             res.userId = user._id
 
-            res.cookie('token', token, { maxAge: remember ? 1209600000 : 604800000 }).json({ user });
+            res.cookie('token', token, { maxAge: remember ? 1209600000 : 604800000, secure: true }).json({ user });
           } else {
             return res.status(400).json({ error: 'Invalid Credentials' });
           }
