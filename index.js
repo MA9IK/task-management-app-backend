@@ -13,7 +13,7 @@ const { registerValidator } = require('./validations/userValidator');
 app.use(express.json());
 app.use(cors({
   credentials: true,
-  origin: 'https://test-front-tjrz.onrender.com',
+  origin: ['https://test-front-tjrz.onrender.com', 'http://localhost:3000'],
   optionsSuccessStatus: 200,
   httpOnly: false
 }));

@@ -52,7 +52,7 @@ const login = async (req, res) => {
               user: user.username,
               id: user._id
             }, process.env.SECRETKEY, { expiresIn: '30d' });
-            res.userId = user._id
+            res.userId = user._id;
 
             res.cookie('token', token, {
               maxAge: remember ? 1209600000 : 604800000,
@@ -103,9 +103,20 @@ const logout = async (req, res) => {
   }
 };
 
+const forgotPass = async (req, res) => {
+  try {
+    const { email } = req.body;
+
+
+  } catch (err) {
+    console.log(err);
+    res.status(500).json({ error: err });
+  }
+};
 module.exports = {
   register,
   login,
   logout,
-  profile
+  profile,
+  forgotPass
 };
