@@ -3,14 +3,17 @@ const {
   register,
   login,
   logout
-} = require('../Controllers/UserController');
+} = require('../controllers/UserController');
 const { checkAuth } = require('../middlewares/checkAuth');
-let express = require('express');
-let router = express.Router();
+const express = require('express');
+
+const router = express.Router();
 
 module.exports = app => {
-  app.get('/profile', checkAuth, profile);
-  app.post('/register', register);
-  app.post('/login', login);
-  app.post('/logout', logout);
+  router.get('/profile', checkAuth, profile);
+  router.post('/register', register);
+  router.post('/login', login);
+  router.post('/logout', logout);
+
+  app.use('/users', router);
 };

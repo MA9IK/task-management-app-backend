@@ -7,8 +7,8 @@ const {
 const { checkAuth } = require('../middlewares/checkAuth');
 
 module.exports = app => {
-  app.get('/task', checkAuth, allTasks);
-  app.post('/task', checkAuth, create);
-  app.patch('/task/:id', checkAuth, update);
-  app.delete('/task/:id', checkAuth, remove);
+  app.get('/tasks', checkAuth, allTasks);
+  app.post('/tasks', checkAuth, create);
+  app.patch('/tasks/:id', checkAuth, update);
+  app.delete('/tasks/:id', checkAuth, remove);
 };
