@@ -1,46 +1,37 @@
 const express = require('express');
 const dotenv = require('dotenv');
-const mongoose = require('mongoose');
-const app = express();
-const PORT = process.env.PORT || 4000;
-const { register, login, logout, profile } = require('./Controllers/UserController');
-const { create, allTasks, update, remove } = require('./Controllers/TaskController');
+const connection = require('./db');
 const cookieParser = require('cookie-parser');
 const cors = require('cors');
-const { checkAuth } = require('./utils/checkAuth');
-const { registerValidator } = require('./validations/userValidator');
+const bodyParser = require('body-parser');
+const { checkAuth } = require('./middlewares/checkAuth');
+const usersRoutes = require('./routes/users');
+const tasksRoutes = require('./routes/tasks');
 
-app.use(express.json());
-app.use(cors({
-  credentials: true,
-  origin: ['https://test-front-tjrz.onrender.com', 'http://localhost:3000'],
-  optionsSuccessStatus: 200,
-  httpOnly: false
-}));
-app.use(cookieParser());
 dotenv.config();
+connection();
 
-mongoose.connect(process.env.DBCONNECT)
-  .then(() => {
-    console.log('Connected to mongoDB');
+const app = express();
+const PORT = process.env.PORT || 4000;
+
+app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({ extended: true }));
+app.use(express.json());
+app.use(
+  cors({
+    credentials: true,
+    origin: ['https://test-front-tjrz.onrender.com', 'http://localhost:3000'],
+    optionsSuccessStatus: 200,
+    httpOnly: false
   })
-  .catch(err => {
-    console.log(err);
-  });
+);
+app.use(cookieParser());
 
 app.get('/', checkAuth);
-app.get('/profile', checkAuth, profile);
-app.post('/register', registerValidator, register);
-app.post('/login', login);
-app.post('/logout', logout);
 
-app.get('/task', checkAuth, allTasks);
-app.post('/task', checkAuth, create);
-app.patch('/task/:id', checkAuth, update);
-app.delete('/task/:id', checkAuth, remove);
+tasksRoutes(app);
+usersRoutes(app);
 
-app.listen(PORT, (req, res) => {
-  console.log(`Server started on port - ${PORT}`);
+app.listen(PORT, () => {
+  console.log(`Server started on port ${PORT}`);
 });
-
-

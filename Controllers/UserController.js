@@ -1,35 +1,33 @@
-const userModel = require('../Models/UserModel');
+const userModel = require('../models/UserModel');
 const jwt = require('jsonwebtoken');
 const bcrypt = require('bcrypt');
-const { validationResult } = require('express-validator');
 
 const register = async (req, res) => {
   try {
-    const errors = validationResult(req);
-    if (!errors.isEmpty()) {
-      return res.status(400).json({ errors: errors.array() });
-    }
-
-    const { username, email, password, repeatPass } = req.body;
-
-    if (repeatPass !== password) {
-      return res.status(403).json({ error: 'password is not match' });
-    }
-
-    const hashPassword = await bcrypt.hash(password, 10);
-
+    const { username, email, password } = req.body;
     const user = await userModel.create({
       username: username,
       email: email,
-      passwordHash: hashPassword
+      passwordHash: `${bcrypt.hash(password, 10)}`
     });
 
-    const token = jwt.sign({
-      user: user.username,
-      id: user._id
-    }, process.env.SECRETKEY, { expiresIn: '30d' });
+    const token = jwt.sign(
+      {
+        user: user.username,
+        id: user._id,
+        email: user.email
+      },
+      process.env.SECRETKEY,
+      { expiresIn: '30d' }
+    );
 
-    res.cookie('token', token, { maxAge: 604800000, secure: true, httpOnly: false });
+    res.cookie('token', token, {
+      maxAge: 604800000,
+      secure: true,
+      httpOnly: true,
+      path: '/',
+      sameSite: 'none'
+    });
 
     const { passwordHash, ...userWithoutPass } = user._doc;
 
@@ -43,24 +41,32 @@ const register = async (req, res) => {
 const login = async (req, res) => {
   try {
     const { email, password, remember } = req.body;
-    userModel.findOne({ email: email })
-      .then((user) => {
+    userModel
+      .findOne({ email: email })
+      .then(user => {
         if (user) {
-          const matches = bcrypt.compareSync(password, user.passwordHash);
-          if (matches) {
-            const token = jwt.sign({
-              user: user.username,
-              id: user._id
-            }, process.env.SECRETKEY, { expiresIn: '30d' });
+          const isValidPass = bcrypt.compareSync(password, user.passwordHash);
+          if (isValidPass) {
+            const token = jwt.sign(
+              {
+                user: user.username,
+                id: user._id,
+                email: user.email
+              },
+              process.env.SECRETKEY,
+              { expiresIn: '30d' }
+            );
             res.userId = user._id;
 
-            res.cookie('token', token, {
-              maxAge: remember ? 1209600000 : 604800000,
-              secure: true,
-              httpOnly: true,
-              path: '/',
-              sameSite: 'none'
-            }).json({ user });
+            res
+              .cookie('token', token, {
+                maxAge: remember ? 1209600000 : 604800000,
+                secure: true,
+                httpOnly: true,
+                path: '/',
+                sameSite: 'none'
+              })
+              .json({ user });
           } else {
             return res.status(400).json({ error: 'Invalid Credentials' });
           }
@@ -69,7 +75,6 @@ const login = async (req, res) => {
         }
       })
       .catch(err => {
-
         console.log(err);
       });
   } catch (err) {
@@ -84,13 +89,14 @@ const profile = async (req, res) => {
     if (token) {
       await jwt.verify(token, process.env.SECRETKEY, {}, (err, decoded) => {
         if (err) throw err;
-        res.json({ auth: true, decoded });
+        res.json({ auth: true });
       });
     } else {
       res.status(401).json({ auth: false });
     }
   } catch (err) {
-
+    console.log(err);
+    res.status(404).json({ error: err });
   }
 };
 
@@ -103,20 +109,9 @@ const logout = async (req, res) => {
   }
 };
 
-const forgotPass = async (req, res) => {
-  try {
-    const { email } = req.body;
-
-
-  } catch (err) {
-    console.log(err);
-    res.status(500).json({ error: err });
-  }
-};
 module.exports = {
   register,
   login,
   logout,
-  profile,
-  forgotPass
+  profile
 };

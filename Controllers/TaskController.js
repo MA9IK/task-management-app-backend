@@ -1,4 +1,4 @@
-const TaskModel = require('../Models/TaskModel');
+const TaskModel = require('../models/TaskModel');
 const jwt = require('jsonwebtoken');
 
 const create = async (req, res) => {
@@ -17,16 +17,19 @@ const create = async (req, res) => {
     });
 
     res.json(task);
-
   } catch (err) {
     res.status(400).json({ Error: 'Something went wrong' });
   }
 };
 
-
 const allTasks = async (req, res) => {
   try {
     const token = req.cookies.token;
+
+    if (!token) {
+      return res.status(401).json({ auth: false });
+    }
+
     const decoded = jwt.verify(token, process.env.SECRETKEY);
     const userId = decoded.id;
 
@@ -50,11 +53,15 @@ const update = async (req, res) => {
       return res.status(404).json({ Error: 'Task not found' });
     }
 
-    const updatedTask = await TaskModel.findByIdAndUpdate(id, {
-      title: title,
-      detail: detail,
-      status: status
-    }, { new: true });
+    const updatedTask = await TaskModel.findByIdAndUpdate(
+      id,
+      {
+        title: title,
+        detail: detail,
+        status: status
+      },
+      { new: true }
+    );
 
     res.json(updatedTask);
   } catch (err) {
@@ -62,11 +69,9 @@ const update = async (req, res) => {
   }
 };
 
-
 const remove = async (req, res) => {
   try {
-    const id = req.params.id
-
+    const id = req.params.id;
 
     await TaskModel.findByIdAndDelete(id);
 
