@@ -1,10 +1,5 @@
-const {
-  allTasks,
-  update,
-  remove,
-  create
-} = require('../controllers/TaskController');
 const { checkAuth } = require('../middlewares/checkAuth');
+const { allTasks, update, remove, create } = require('../controllers/index');
 
 module.exports = app => {
   app.get('/tasks', checkAuth, allTasks);

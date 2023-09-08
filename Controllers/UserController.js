@@ -5,10 +5,11 @@ const bcrypt = require('bcrypt');
 const register = async (req, res) => {
   try {
     const { username, email, password } = req.body;
+    const hashedPassword = await bcrypt.hash(password, 10);
     const user = await userModel.create({
       username: username,
       email: email,
-      passwordHash: `${bcrypt.hash(password, 10)}`
+      passwordHash: hashedPassword
     });
 
     const token = jwt.sign(

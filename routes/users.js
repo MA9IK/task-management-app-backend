@@ -1,12 +1,6 @@
-const {
-  profile,
-  register,
-  login,
-  logout
-} = require('../controllers/UserController');
 const { checkAuth } = require('../middlewares/checkAuth');
 const express = require('express');
-
+const { profile, register, login, logout } = require('../controllers/index');
 const router = express.Router();
 
 module.exports = app => {
