@@ -5,7 +5,7 @@ const checkAuth = async (req, res, next) => {
     const token = req.cookies.token;
 
     if (!token) {
-      return res.status(403).json({ error: 'No token provided' });
+      return res.status(403).json({ auth: false });
     }
 
     jwt.verify(token, process.env.SECRETKEY, (err, decoded) => {
