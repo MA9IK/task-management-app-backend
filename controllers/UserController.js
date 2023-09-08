@@ -90,7 +90,7 @@ const profile = async (req, res) => {
     if (token) {
       await jwt.verify(token, process.env.SECRETKEY, {}, (err, decoded) => {
         if (err) throw err;
-        res.json({ auth: true });
+        res.json({ auth: true, decoded: decoded });
       });
     } else {
       res.status(401).json({ auth: false });
