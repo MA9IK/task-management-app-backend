@@ -1,15 +1,5 @@
-const {
-  profile,
-  register,
-  login,
-  logout
-} = require('../controllers/UserController');
-const {
-  create,
-  allTasks,
-  update,
-  remove
-} = require('../controllers/TaskController');
+const { create, allTasks, update, remove } = require('./TaskController');
+const { profile, register, login, logout } = require('./UserController');
 
 module.exports = {
   create,

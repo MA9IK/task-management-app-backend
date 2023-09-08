@@ -1,6 +1,6 @@
 const { checkAuth } = require('../middlewares/checkAuth');
 const express = require('express');
-const { profile, register, login, logout } = require('../controllers/index');
+const { profile, register, login, logout } = require('../Controllers/index');
 const router = express.Router();
 
 module.exports = app => {
