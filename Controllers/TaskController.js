@@ -1,4 +1,4 @@
-const TaskModel = require('../models/TaskModel');
+const taskModel = require('../models/TaskModel');
 const jwt = require('jsonwebtoken');
 
 const create = async (req, res) => {
@@ -9,7 +9,7 @@ const create = async (req, res) => {
     const decoded = jwt.verify(token, process.env.SECRETKEY);
     const createdBy = decoded.id;
 
-    const task = await TaskModel.create({
+    const task = await taskModel.create({
       title: title,
       detail: detail,
       status: status,
@@ -33,7 +33,7 @@ const allTasks = async (req, res) => {
     const decoded = jwt.verify(token, process.env.SECRETKEY);
     const userId = decoded.id;
 
-    const tasks = await TaskModel.find({ createdBy: userId });
+    const tasks = await taskModel.find({ createdBy: userId });
 
     res.json(tasks);
   } catch (err) {
@@ -47,13 +47,13 @@ const update = async (req, res) => {
 
     const id = req.params.id;
 
-    const existingTask = await TaskModel.findById(id);
+    const existingTask = await taskModel.findById(id);
 
     if (!existingTask) {
       return res.status(404).json({ Error: 'Task not found' });
     }
 
-    const updatedTask = await TaskModel.findByIdAndUpdate(
+    const updatedTask = await taskModel.findByIdAndUpdate(
       id,
       {
         title: title,
@@ -73,7 +73,7 @@ const remove = async (req, res) => {
   try {
     const id = req.params.id;
 
-    await TaskModel.findByIdAndDelete(id);
+    await taskModel.findByIdAndDelete(id);
 
     res.json('deleted');
   } catch (err) {

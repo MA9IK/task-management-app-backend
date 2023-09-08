@@ -1,3 +1,6 @@
+const userModel = require('../Models/UserModel');
+const { createTransport } = require('nodemailer');
+
 module.exports = sendEmail = async (req, res) => {
   try {
     const { email } = req.body;
@@ -24,15 +27,15 @@ module.exports = sendEmail = async (req, res) => {
       text: `Your verification code: ${1 + 2}` // CHANGE THIS
     };
 
-    await transporter.sendMail(mailOptions, async function (err, info) {
+    await transporter.sendMail(mailOptions, async function(err, info) {
       if (err) {
         res.json(err);
       } else {
-        await userModel.findOneAndUpdate(
-          { email },
-          { verificationCode },
-          { new: true }
-        );
+        // await userModel.findOneAndUpdate(
+        //   { email },
+        //   { verificationCode },
+        //   { new: true }
+        // );
         res
           .cookie('email', email, {
             secure: true,
